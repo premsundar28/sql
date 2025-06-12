@@ -1,0 +1,143 @@
+A CTE (Common Table Expression) in SQL is a temporary result set that can be referenced within a SELECT, INSERT, UPDATE, or DELETE statement. CTEs help make complex queries more readable and manageable, especially when you need to use the same subquery multiple times in the query or want to break down a complex logic into simpler steps.
+
+Key Characteristics of CTE:
+
+Temporary: It exists only for the duration of the query execution.
+
+Readability: They make queries more readable and organized.
+
+Reusability: You can reference the CTE multiple times within the same query.
+
+Self-Referencing: CTEs can refer to themselves (recursive CTEs).
+
+Modularity: They allow you to break complex queries into smaller, easier-to-understand pieces.
+
+Syntax of a Basic CTE:
+
+WITH CTE_Name AS (
+    -- Your SQL Query Here
+    SELECT column1, column2, ...
+    FROM some_table
+    WHERE condition
+)
+-- You can now use the CTE in your main query
+SELECT * FROM CTE_Name;
+
+Key Parts:
+WITH: This keyword begins the CTE definition.
+
+CTE_Name: A name you give to the CTE.
+
+The SELECT statement within the CTE is the query that generates the result set.
+
+The final query references the CTE just like a regular table or view.
+
+Example of a Basic CTE:
+
+WITH EmployeesCTE AS (
+    SELECT EmployeeID, FirstName, LastName, Department
+    FROM Employees
+    WHERE Department = 'Sales'
+)
+SELECT * FROM EmployeesCTE;
+
+In this example:
+
+The CTE EmployeesCTE fetches employees from the "Sales" department.
+
+The outer SELECT statement retrieves all the rows from the CTE.
+
+Recursive CTE:
+A recursive CTE refers to itself within its definition. It is typically used for hierarchical data structures like organizational charts or family trees.
+
+Syntax for Recursive CTE:
+
+WITH RECURSIVE CTE_Name AS (
+    -- Anchor Member: Initial Query (non-recursive part)
+    SELECT column1, column2
+    FROM some_table
+    WHERE condition
+    UNION ALL
+    -- Recursive Member: Query that references the CTE itself
+    SELECT t.column1, t.column2
+    FROM some_table t
+    JOIN CTE_Name cte
+    ON t.some_column = cte.some_column
+)
+-- Final query using the recursive CTE
+SELECT * FROM CTE_Name;
+
+Example of Recursive CTE (Hierarchy):
+Let’s say you have a table of employees where each employee has a manager (represented by ManagerID). A recursive CTE can help fetch the hierarchy of employees under a certain manager.
+
+WITH RECURSIVE EmployeeHierarchy AS (
+    -- Anchor Member: Select top-level employees (those without a manager)
+    SELECT EmployeeID, Name, ManagerID
+    FROM Employees
+    WHERE ManagerID IS NULL
+    UNION ALL
+    -- Recursive Member: Select employees who report to others
+    SELECT e.EmployeeID, e.Name, e.ManagerID
+    FROM Employees e
+    INNER JOIN EmployeeHierarchy eh
+    ON e.ManagerID = eh.EmployeeID
+)
+-- Final query to get all employees in the hierarchy
+SELECT * FROM EmployeeHierarchy;
+
+In this example:
+
+The Anchor Member selects employees with no managers (ManagerID IS NULL).
+
+The Recursive Member selects employees whose ManagerID matches the EmployeeID from the previous level of recursion.
+
+The result will be a flattened hierarchy of employees and their respective managers.
+
+Advantages of Using CTEs:
+
+Improved Readability: Complex queries are easier to write and maintain since you can break them down into smaller, more understandable parts.
+
+Reusability: You can reference the CTE multiple times within the query without rewriting the same logic.
+
+Performance: CTEs can improve performance by eliminating the need for subqueries, especially if used in combination with indexes or when you need to join large datasets multiple times.
+
+Modularity: It’s easier to debug and adjust parts of the query since each CTE can be treated like a mini query.
+
+Limitations of CTEs:
+Temporary: CTEs are only available within the context of a single query. They don’t persist between queries or sessions.
+
+No Indexing: Since a CTE is not a persistent object, it cannot have indexes, unlike tables or views.
+
+Performance Concerns with Recursion: Recursive CTEs may have performance issues if not structured properly, especially when dealing with large datasets or deep recursion.
+
+CTE vs Subquery vs View:
+Subquery: A subquery is an inline query used within the SELECT, FROM, or WHERE clauses. While subqueries are flexible, they can sometimes make complex queries harder to read and debug.
+
+View: A view is a stored query that can be referenced like a table. It persists in the database and can be reused across different queries, but it requires extra management.
+
+CTE: Unlike views, CTEs do not persist in the database and are specific to the query they are defined in, making them more flexible for one-time use cases.
+
+Example with Multiple CTEs:
+You can define and use multiple CTEs in a single query, making your logic even more modular.
+
+WITH DepartmentCTE AS (
+    SELECT Department, COUNT(*) AS NumEmployees
+    FROM Employees
+    GROUP BY Department
+),
+SalaryCTE AS (
+    SELECT Department, AVG(Salary) AS AvgSalary
+    FROM Employees
+    GROUP BY Department
+)
+SELECT d.Department, d.NumEmployees, s.AvgSalary
+FROM DepartmentCTE d
+JOIN SalaryCTE s ON d.Department = s.Department;
+Summary:
+CTEs are temporary result sets that improve query readability, reuse, and modularity.
+
+They can be recursive to handle hierarchical data.
+
+CTEs are useful for breaking complex queries into smaller parts and for self-referencing in recursive queries.
+
+While not persistent, they provide a cleaner way to structure SQL code without relying on subqueries or permanent views.
