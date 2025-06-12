@@ -42,7 +42,9 @@ BEGIN
 END$$  -- End the procedure definition
 
 DELIMITER ;  -- Reset delimiter
+
 SQL Syntax Breakdown:
+
 CREATE PROCEDURE: Defines the start of the stored procedure.
 
 IN param1: Defines an input parameter (parameter passed into the procedure).
@@ -54,46 +56,29 @@ BEGIN … END: The body of the procedure where SQL statements are written.
 DELIMITER $$: Changes the statement delimiter temporarily, allowing multi-line definitions to be used without causing syntax errors.
 
 Common SQL Commands Inside Stored Procedures
+
 SELECT: Query data.
-
-sql
-Copy
-Edit
 SELECT * FROM users WHERE id = param1;
+
 INSERT: Add new data.
-
-sql
-Copy
-Edit
 INSERT INTO users (name, age) VALUES (param1, param2);
+
 UPDATE: Modify existing data.
-
-sql
-Copy
-Edit
 UPDATE users SET age = param2 WHERE id = param1;
+
 DELETE: Remove data.
-
-sql
-Copy
-Edit
 DELETE FROM users WHERE id = param1;
-Control Flow: Using IF, CASE, WHILE for conditional and looping behavior.
 
-sql
-Copy
-Edit
+Control Flow: Using IF, CASE, WHILE for conditional and looping behavior.
 IF (param1 > 0) THEN
     UPDATE users SET active = 1 WHERE id = param1;
 ELSE
     UPDATE users SET active = 0 WHERE id = param1;
 END IF;
+
 Modifying and Dropping Stored Procedures
 Modifying a Stored Procedure: Direct modification is not supported in some DBMS (like MySQL), so you may need to drop and recreate the procedure.
 
-sql
-Copy
-Edit
 -- Drop the existing procedure
 DROP PROCEDURE IF EXISTS ProcedureName;
 
@@ -101,35 +86,22 @@ DROP PROCEDURE IF EXISTS ProcedureName;
 CREATE PROCEDURE ProcedureName(...) BEGIN ... END;
 Dropping a Stored Procedure:
 
-sql
-Copy
-Edit
 DROP PROCEDURE IF EXISTS ProcedureName;
 Calling (Executing) Stored Procedures
+
 Without Parameters:
-
-sql
-Copy
-Edit
 CALL ProcedureName();
+
 With Input Parameters:
-
-sql
-Copy
-Edit
 CALL ProcedureName(10);
-With Input and Output Parameters:
 
-sql
-Copy
-Edit
+With Input and Output Parameters:
 CALL ProcedureName(10, @output_param);
 SELECT @output_param;
+
 Example: A Simple Stored Procedure
 Scenario: A stored procedure to retrieve user details by user ID.
-sql
-Copy
-Edit
+
 DELIMITER $$
 
 CREATE PROCEDURE GetUserDetails(IN user_id INT)
@@ -140,11 +112,8 @@ BEGIN
 END$$
 
 DELIMITER ;
-To call the stored procedure:
 
-sql
-Copy
-Edit
+To call the stored procedure:
 CALL GetUserDetails(1);
 This will return the id, name, and email for the user with id = 1.
 
@@ -152,10 +121,6 @@ Handling Errors in Stored Procedures
 Error handling is crucial for ensuring stored procedures handle issues gracefully. SQL provides constructs like DECLARE ... HANDLER for handling exceptions.
 
 Example:
-
-sql
-Copy
-Edit
 CREATE PROCEDURE HandleErrorExample()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -171,6 +136,7 @@ BEGIN
 
     COMMIT;
 END;
+
 Transactions in Stored Procedures
 Stored procedures can be used to manage database transactions, ensuring data integrity. This is done using the following commands:
 
@@ -181,16 +147,13 @@ COMMIT: Commits the transaction (makes changes permanent).
 ROLLBACK: Rolls back the transaction (reverts changes).
 
 Example:
-
-sql
-Copy
-Edit
 CREATE PROCEDURE AddUserTransaction(IN user_name VARCHAR(255), IN user_age INT)
 BEGIN
     START TRANSACTION;
     INSERT INTO users (name, age) VALUES (user_name, user_age);
     COMMIT;
 END;
+
 Advantages of Stored Procedures
 Performance: Stored procedures are precompiled, leading to quicker execution times.
 
