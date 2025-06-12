@@ -29,8 +29,7 @@ Creating a Stored Procedure
 The basic syntax to create a stored procedure varies slightly between different SQL database management systems (DBMS). Below is an example for MySQL:
 
 sql
-Copy
-Edit
+
 DELIMITER $$  -- Set delimiter to handle multi-line stored procedures
 
 CREATE PROCEDURE `ProcedureName`(
