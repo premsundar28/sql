@@ -64,6 +64,11 @@ drop trigger loggg3
 quering all the triggers:
 show triggers;
 
+creating index:
+create index i1 on p1(id);
+
+
+
 
 
 
